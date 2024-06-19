@@ -113,11 +113,11 @@ Chanakya-Niti
 
 1. Clone the repository:
    ```sh
-   git clone https://github.com/<your-username>/Chanakya-Niti.git
+   git clone https://github.com/<your-username>/chanakya-niti-backend.git
    ```
 2. Navigate to the project directory:
    ```sh
-   cd Chanakya-Niti
+   cd chanakya-niti-backend
    ```
 3. Install dependencies:
    ```sh
