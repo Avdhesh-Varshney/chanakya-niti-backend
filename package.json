@@ -2,10 +2,12 @@
   "name": "chanakya-niti-backend",
   "version": "1.0.0",
   "description": "A digital platform leveraging AI to provide accessible and engaging content on the teachings of Chanakya, an ancient Indian philosopher.",
-  "main": "index.js",
+  "main": "app.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "nodemon": "nodemon index.js"
+    "start": "node app.js",
+    "server": "nodemon app.js"
   },
   "repository": {
     "type": "git",
@@ -13,11 +15,8 @@
   },
   "keywords": [
     "chanakya-niti",
-    "backend",
-    "express",
-    "api",
-    "node",
-    "server"
+    "chanakya-niti-backend",
+    "backend"
   ],
   "author": "Avdhesh Varshney",
   "license": "ISC",
@@ -26,11 +25,10 @@
   },
   "homepage": "https://github.com/Avdhesh-Varshney/chanakya-niti-backend#readme",
   "dependencies": {
-    "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
     "express": "^4.19.2",
-    "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.4.3"
+    "mongoose": "^8.5.1"
   },
   "devDependencies": {
     "nodemon": "^3.1.4"
