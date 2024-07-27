@@ -9,8 +9,8 @@ import fetchuser from '../middleware/fetchuser.js';
 const JWT_SECRET = process.env.JWT_SECRET || 'ChanakyaNiti';
 const router = express.Router();
 
-// Route 1: Create a User using: POST "/api/auth/createuser". No Login Required
-router.post('/createuser', [
+// Route 1: Create a User using: POST "/api/auth/signup". No Login Required
+router.post('/signup', [
   // Setting a validation so that input value will be verified before sending to the dataset
   body('name', 'Enter a valid name').isLength({ min: 3 }),
   body('email', 'Enter a valid email').isEmail(),

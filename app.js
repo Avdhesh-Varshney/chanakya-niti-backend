@@ -10,7 +10,11 @@ const port = process.env.PORT || 3000;
 const URI = process.env.MONGODB_URI;
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: 'https://chanakya-niti.vercel.app/',
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true
+}));
 app.use(express.json());
 
 // Database Connection
@@ -28,7 +32,7 @@ connectDB();
 // Available Routes
 import auth from './routes/auth.js';
 app.use('/api/auth', auth);
-app.get('/api/random', (req, res) => {
+app.get('/', (req, res) => {
   res.send('Hello from Chanakya Niti Backend!');
 });
 
