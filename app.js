@@ -10,8 +10,16 @@ const port = process.env.PORT || 3000;
 const URI = process.env.MONGODB_URI;
 
 // Middleware
+const allowedOrigins = ['https://chanakya-niti.vercel.app', 'http://localhost:5173'];
+
 app.use(cors({
-  origin: 'https://chanakya-niti.vercel.app/',
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true
 }));

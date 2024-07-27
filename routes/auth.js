@@ -63,9 +63,11 @@ router.post('/login', [
   body('password', 'Password cannot be blank').exists(),
 ], async (req, res) => {
   let success = false;
+  console.log('Login request received:', req.body);
   // If there are errors, return Bad request and the errors
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
+    console.log('Validation errors:', errors.array());
     return res.status(400).json({ success, errors: errors.array() });
   }
 
