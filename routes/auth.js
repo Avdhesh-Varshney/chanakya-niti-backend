@@ -5,6 +5,7 @@ import { body, validationResult } from 'express-validator';
 
 import User from '../models/User.js';
 import fetchuser from '../middleware/fetchuser.js';
+import { forgetPoasswrd } from '../controllers/forgetPassword.controller.js';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'ChanakyaNiti';
 const router = express.Router();
@@ -106,5 +107,5 @@ router.post('/getuser', fetchuser, async (req, res) => {
     res.status(500).send("Internal server error.");
   }
 });
-
+ 
 export default router;
