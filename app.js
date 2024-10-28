@@ -39,8 +39,10 @@ connectDB();
 
 // Available Routes
 import auth from './routes/auth.js';
-app.use('/api/auth', auth);
-app.get('/', (req, res) => {
+import forget from './routes/forget.js'
+ app.use('/api/auth', auth);
+app.use('/api/forget', forget)
+ app.get('/', (req, res) => {
   res.send('Hello from Chanakya Niti Backend!');
 });
 
