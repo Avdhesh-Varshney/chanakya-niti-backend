@@ -1,6 +1,5 @@
 import jwt from 'jsonwebtoken';
-const JWT_SECRET = process.env.JWT_SECRET || 'Skanarul$123@';
-
+const JWT_SECRET = process.env.JWT_SECRET;
 const fetchuser = (req, res, next) => {
     // Get the user from the jwt token and add id to req object
     const authHeader = req.header('Authorization');
