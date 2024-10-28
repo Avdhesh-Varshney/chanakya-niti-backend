@@ -4,6 +4,11 @@
 
 CHANAKYA-NITI is a web application designed to provide an engaging platform for exploring and learning about the teachings of Chanakya, an ancient Indian philosopher, economist, and strategist.
 
+## 📈 GitHub Repository Stats
+| 🌟 **Stars** | 🍴 **Forks** | 🐛 **Issues** | 🔔 **Open PRs** | 🔕 **Closed PRs** | 🛠️ **Languages** | ✅ **Contributors** |
+|--------------|--------------|---------------|-----------------|------------------|------------------|------------------|
+| ![GitHub stars](https://img.shields.io/github/stars/Avdhesh-Varshney/chanakya-niti-backend) | ![forks](https://img.shields.io/github/forks/Avdhesh-Varshney/chanakya-niti-backend) | ![issues](https://img.shields.io/github/issues/Avdhesh-Varshney/chanakya-niti-backend?color=32CD32) | ![pull requests](https://img.shields.io/github/issues-pr/Avdhesh-Varshney/chanakya-niti-backend?color=FFFF8F) | ![Closed PRs](https://img.shields.io/github/issues-pr-closed/Avdhesh-Varshney/chanakya-niti-backend?color=20B2AA) | ![Languages](https://img.shields.io/github/languages/count/Avdhesh-Varshney/chanakya-niti-backend?color=20B2AA) | ![Contributors](https://img.shields.io/github/contributors/Avdhesh-Varshney/chanakya-niti-backend?color=00FA9A) |
+
 ## Purpose and Motivation 🎯
 
 This project aims to bring the timeless wisdom of Chanakya to a modern audience, making his teachings accessible and engaging through a digital platform.
