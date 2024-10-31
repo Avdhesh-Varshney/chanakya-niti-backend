@@ -212,6 +212,10 @@ router.get("/github/getUser", async (req, res) => {
   }
 });
 
+const SESSION = {
+  COOKIE_KEY: "thisappisawesome",
+};
+
 //
 
 
