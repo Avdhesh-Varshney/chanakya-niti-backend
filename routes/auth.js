@@ -1,11 +1,18 @@
 import express from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import dotenv from "dotenv";
+dotenv.config();
 import { body, validationResult } from 'express-validator';
 
 import User from '../models/User.js';
 import fetchuser from '../middleware/fetchuser.js';
 import nodemailer from 'nodemailer';
+//for oauth
+import { googleLogin } from "../middleware/oAuthLogin.js";
+import axios from "axios";
+import passport from 'passport';
+
 
 
 
@@ -106,6 +113,108 @@ router.post('/login', [
     res.status(500).send("Internal server error.");
   }
 });
+
+
+
+//
+
+//Route 3 : Login with google
+router.get("/google", async (req, res) => {
+  const code = req.query.code;
+  try {
+    const googleRes = await googleLogin.getToken(code);
+    googleLogin.setCredentials(googleRes.tokens);
+    const userRes = await axios.get(
+      `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${googleRes.tokens.access_token}`
+    );
+    const { email, name } = userRes.data;
+
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      //demo password
+      const password = "123#Eds@2024";
+      // Implementing a hashing system to protect the password using 'bcrypt' package
+      const salt = await bcrypt.genSalt(10);
+      const securePassword = await bcrypt.hash(password, salt);
+      user = await User.create({
+        name,
+        email,
+        password: securePassword,
+      });
+    }
+    const { _id } = user;
+    const token = jwt.sign({ _id, email }, JWT_SECRET, {
+      expiresIn: JWT_EXPIRY,
+    });
+    res.status(200).json({
+      message: "success",
+      token,
+      user,
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: "Internal Server Error",
+    });
+  }
+});
+
+//Route 4 : Login With Github
+router.get("/github", async (req, res) => {
+  try {
+    const code = req.query.code;
+    const params = `?client_id=${process.env.GITHUB_CLIENT_ID}&client_secret=${process.env.GITHUB_CLIENT_SECRET}&code=${code}`;
+    const response = await axios.post(
+      `https://github.com/login/oauth/access_token${params}`,
+      { headers: { Accept: "application/json" } }
+    );
+    res.json(response.data);
+    console.log(response.data);
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+router.get("/github/getUser", async (req, res) => {
+  try {
+    req.get("Authorization");
+    const response = await axios.get("https://api.github.com/user", {
+      headers: {
+        Authorization: req.get("Authorization"),
+      },
+    });
+    const {name,email} = await response.data;
+    let user = await User.findOne({ email:email });
+    if (!user) {
+      //demo password
+      const password = "123#Eds@2024";
+      // Implementing a hashing system to protect the password using 'bcrypt' package
+      const salt = await bcrypt.genSalt(10);
+      const securePassword = await bcrypt.hash(password, salt);
+      user = await User.create({
+        name:name,
+        email:email||"mail123@gmail.com",//if user hides the email
+        password: securePassword,
+      });
+    }
+    const { _id } = user;
+    const token = jwt.sign({ _id, email }, JWT_SECRET, {
+      expiresIn: JWT_EXPIRY,
+    });
+    res.status(200).json({
+      message: "success",
+      token,
+      user,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+//
+
+
 
 // Route 3: Get logged-in User Details using: POST "/api/auth/getuser". Login Required
 router.post('/getuser', fetchuser, async (req, res) => {
