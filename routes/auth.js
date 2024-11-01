@@ -118,7 +118,7 @@ router.post('/login', [
 
 //
 
-//Route 3 : Login with google
+// Oauth Route 1 : Login with google
 router.get("/google", async (req, res) => {
   const code = req.query.code;
   try {
@@ -160,7 +160,7 @@ router.get("/google", async (req, res) => {
   }
 });
 
-//Route 4 : Login With Github
+//Oauth Route 2 : Login With Github
 router.get("/github", async (req, res) => {
   try {
     const code = req.query.code;
@@ -170,12 +170,15 @@ router.get("/github", async (req, res) => {
       { headers: { Accept: "application/json" } }
     );
     res.json(response.data);
-    console.log(response.data);
   } catch (error) {
-    console.log(error);
+      console.log(error);
+      res.status(500).json({
+        message: "Internal Server Error",
+      });
   }
 });
 
+//Oauth Route 3 : Get user details from github api
 router.get("/github/getUser", async (req, res) => {
   try {
     req.get("Authorization");
@@ -185,7 +188,7 @@ router.get("/github/getUser", async (req, res) => {
       },
     });
     const {name,email} = await response.data;
-    let user = await User.findOne({ email:email });
+    let user = await User.findOne({ email: email || "mail123@gmail.com" });//if the github user already created an account with this email before
     if (!user) {
       //demo password
       const password = "123#Eds@2024";
@@ -205,16 +208,143 @@ router.get("/github/getUser", async (req, res) => {
     res.status(200).json({
       message: "success",
       token,
-      user,
+      user:{
+        name : user.name,
+        email:user.email
+      }
     });
   } catch (error) {
-    console.log(error);
+     console.log(error);
+     res.status(500).json({
+       message: "Internal Server Error",
+     });
   }
 });
 
-const SESSION = {
-  COOKIE_KEY: "thisappisawesome",
-};
+//twitter oauth
+
+import { Client, auth } from "twitter-api-sdk";
+
+let accessToken = "";
+
+const authClient = new auth.OAuth2User({
+  client_id: process.env.X_CLIENT_ID,
+  client_secret: process.env.X_CLIENT_SECRET,
+  callback: "http://localhost:8080/api/auth/callback",
+  scopes: ["tweet.read", "users.read"],
+});
+
+const client = new Client(authClient);
+
+const STATE = "my-state";
+
+router.get("/callback", async function (req, res) {
+  try {
+    const { code, state } = req.query;
+    if (state !== STATE) return res.status(500).send("State isn't matching");
+    accessToken = (await authClient.requestAccessToken(code)).token
+      .access_token;
+    // console.log("AccessToken: " + JSON.stringify(accessToken));
+
+    const user = await client.users.findMyUser();
+//find if the user exists in db or create one
+    let findUser = await User.findOne({ name: user.data.name }); //can't access email from twitter
+    const email = "testEmail123@gmail.com"; // test email
+    if (!findUser) {
+      //demo password
+      const password = "123#Eds@2024";
+      // Implementing a hashing system to protect the password using 'bcrypt' package
+      const salt = await bcrypt.genSalt(10);
+      const securePassword = await bcrypt.hash(password, salt);
+      findUser = await User.create({
+        name: user.data.name,
+        email: email,
+        password: securePassword,
+      });
+    }
+    const { _id } = findUser;
+    const token = jwt.sign({ _id, email }, JWT_SECRET, {
+      expiresIn: JWT_EXPIRY,
+    });
+
+
+    res.send(`
+      <html>
+      <body>
+        <p>You have been authenticated with this platform. You can close the window now.</p>
+        <script>
+          // Pass the access token and status to the parent window
+          window.opener.postMessage({ AccessToken: ${JSON.stringify(
+            accessToken
+          )}, status: "Login successful",token:${JSON.stringify(token)}, user :${JSON.stringify({name:findUser.name,email:findUser.email,x_username:user.data.username})} }, "*");
+
+          // Close the window after a delay
+          setTimeout(() => {
+            window.close();
+          }, 2000); // 2 seconds delay
+        </script>
+      </body>
+      </html>
+    `);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Internal Server Error",
+    });
+  }
+});
+
+// Oauth Route 4 : login with twitter
+router.get("/x_twitter", async function (req, res) {
+  const authUrl = authClient.generateAuthURL({
+    state: STATE,
+    code_challenge_method: "s256",
+  });
+  // console.log(authUrl);
+  res.redirect(authUrl);
+});
+
+//Oauth Route 5 : find the twitter user in db
+router.get("/x_twitter/getUser",async(req,res)=>{
+  const {name} = req.query;
+  try {
+    let findUser = await User.findOne({name:name}); //can't access email from twitter
+    const email = "testEmail123@gmail.com"
+    if (!findUser) {
+      //demo password
+      const password = "123#Eds@2024";
+      // Implementing a hashing system to protect the password using 'bcrypt' package
+      const salt = await bcrypt.genSalt(10);
+      const securePassword = await bcrypt.hash(password, salt);
+      findUser = await User.create({
+        name: name,
+        email: email,
+        password: securePassword,
+      });
+    }
+    const { _id } = findUser;
+    const token = jwt.sign({ _id, email }, JWT_SECRET, {
+      expiresIn: JWT_EXPIRY,
+    });
+
+    res.status(200).json({
+      token,
+      user:{
+        name:findUser.name,
+        email:findUser.email,
+      }
+
+    })
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Internal Server Error",
+    });
+    
+  }
+})
+
 
 //
 

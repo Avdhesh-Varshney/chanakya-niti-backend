@@ -11,3 +11,15 @@ export const googleLogin= new google.auth.OAuth2(
   GOOGLE_CLIENT_SECRET,
   "postmessage"
 );
+
+//construct twitter oauth url
+export const getURLWithQueryParams = (
+  baseUrl,
+  params,
+) => {
+  const query = Object.entries(params)
+    .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
+    .join("&");
+
+  return `${baseUrl}?${query}`;
+};
