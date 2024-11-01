@@ -11,7 +11,6 @@ import nodemailer from 'nodemailer';
 //for oauth
 import { googleLogin } from "../middleware/oAuthLogin.js";
 import axios from "axios";
-import passport from 'passport';
 
 
 
