@@ -39,10 +39,12 @@ connectDB();
 
 // Available Routes
 import auth from './routes/auth.js';
+
 app.use('/api/auth', auth);
 app.get('/', (req, res) => {
   res.send('Hello from Chanakya Niti Backend!');
 });
+
 
 // Start Server
 app.listen(port, () => {
