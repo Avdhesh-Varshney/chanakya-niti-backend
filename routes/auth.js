@@ -226,10 +226,12 @@ import { Client, auth } from "twitter-api-sdk";
 
 let accessToken = "";
 
+const BACKEND_URL = process.env.BACKEND_URL;
+
 const authClient = new auth.OAuth2User({
   client_id: process.env.X_CLIENT_ID,
   client_secret: process.env.X_CLIENT_SECRET,
-  callback: "http://localhost:8080/api/auth/callback",
+  callback: `${BACKEND_URL}/api/auth/callback`,
   scopes: ["tweet.read", "users.read"],
 });
 
