@@ -35,7 +35,7 @@
     "googleapis": "^144.0.0",
     "got": "^14.4.3",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.5.1",
+    "mongoose": "^8.8.3",
     "needle": "^3.3.1",
     "nodemailer": "^6.9.15",
     "oauth-1.0a": "^2.2.6",
